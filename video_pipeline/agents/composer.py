@@ -15,6 +15,66 @@ from ..core.bus import EventType
 from ..core.models import PipelineContext, VideoAsset
 
 
+def _import_moviepy():
+    """Import moviepy classes, supporting both v1 and v2."""
+    try:
+        from moviepy import (
+            AudioFileClip,
+            CompositeAudioClip,
+            ImageSequenceClip,
+            concatenate_videoclips,
+        )
+    except ImportError:
+        from moviepy.editor import (
+            AudioFileClip,
+            CompositeAudioClip,
+            ImageSequenceClip,
+            concatenate_videoclips,
+        )
+    return AudioFileClip, CompositeAudioClip, ImageSequenceClip, concatenate_videoclips
+
+
+def _detect_moviepy_v2() -> bool:
+    """Return True if moviepy >= 2.0 is installed."""
+    try:
+        import moviepy
+        version = getattr(moviepy, "__version__", "1")
+        return int(version.split(".")[0]) >= 2
+    except Exception:
+        return False
+
+
+_MOVIEPY_V2 = _detect_moviepy_v2()
+
+
+def _clip_subclip(clip: Any, start: float, end: float) -> Any:
+    """clip.subclip (v1) / clip.subclipped (v2)."""
+    if _MOVIEPY_V2:
+        return clip.subclipped(start, end)
+    return clip.subclip(start, end)
+
+
+def _clip_set_audio(video_clip: Any, audio_clip: Any) -> Any:
+    """clip.set_audio (v1) / clip.with_audio (v2)."""
+    if _MOVIEPY_V2:
+        return video_clip.with_audio(audio_clip)
+    return video_clip.set_audio(audio_clip)
+
+
+def _clip_set_start(clip: Any, start_time: float) -> Any:
+    """clip.set_start (v1) / clip.with_start (v2)."""
+    if _MOVIEPY_V2:
+        return clip.with_start(start_time)
+    return clip.set_start(start_time)
+
+
+def _clip_volumex(clip: Any, factor: float) -> Any:
+    """clip.volumex (v1) / clip.with_volume_scaled (v2)."""
+    if _MOVIEPY_V2:
+        return clip.with_volume_scaled(factor)
+    return clip.volumex(factor)
+
+
 class VideoComposerAgent(BaseAgent):
     """Composes final video from rendered frames and audio tracks.
 
@@ -83,21 +143,9 @@ class VideoComposerAgent(BaseAgent):
         video_path = output_dir / "final_video.mp4"
         thumbnail_path = context.visuals.thumbnail_path
 
-        # Build video clip — support both moviepy v1 and v2
-        try:
-            from moviepy import (
-                AudioFileClip,
-                CompositeAudioClip,
-                ImageSequenceClip,
-                concatenate_videoclips,
-            )
-        except ImportError:
-            from moviepy.editor import (
-                AudioFileClip,
-                CompositeAudioClip,
-                ImageSequenceClip,
-                concatenate_videoclips,
-            )
+        AudioFileClip, CompositeAudioClip, ImageSequenceClip, _ = (
+            _import_moviepy()
+        )
 
         video_clip = ImageSequenceClip(frame_paths, fps=fps)
 
@@ -112,11 +160,10 @@ class VideoComposerAgent(BaseAgent):
 
         if audio_clips:
             composite_audio = CompositeAudioClip(audio_clips)
-            # Trim audio to video length (or vice-versa)
-            composite_audio = composite_audio.subclip(
-                0, min(composite_audio.duration, video_clip.duration)
-            )
-            video_clip = video_clip.set_audio(composite_audio)
+            # Trim audio to video length
+            trim_end = min(composite_audio.duration, video_clip.duration)
+            composite_audio = _clip_subclip(composite_audio, 0, trim_end)
+            video_clip = _clip_set_audio(video_clip, composite_audio)
         else:
             self.logger.warning(
                 "No audio files found - producing silent video"
@@ -182,10 +229,9 @@ class VideoComposerAgent(BaseAgent):
             if seg_path and Path(seg_path).exists():
                 try:
                     clip = AudioFileClip(str(seg_path))
-                    # Offset the segment to its scene start time if provided
                     start_time = segment.get("start_time", 0)
                     if start_time > 0:
-                        clip = clip.set_start(start_time)
+                        clip = _clip_set_start(clip, start_time)
                     clips.append(clip)
                 except Exception as e:
                     self.logger.warning(
@@ -210,7 +256,7 @@ class VideoComposerAgent(BaseAgent):
             try:
                 music_clip = AudioFileClip(str(music_path))
                 volume = self.config.music.volume_percent / 100
-                music_clip = music_clip.volumex(volume)
+                music_clip = _clip_volumex(music_clip, volume)
                 clips.append(music_clip)
             except Exception as e:
                 self.logger.warning(
