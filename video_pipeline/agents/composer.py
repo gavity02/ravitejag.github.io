@@ -83,13 +83,21 @@ class VideoComposerAgent(BaseAgent):
         video_path = output_dir / "final_video.mp4"
         thumbnail_path = context.visuals.thumbnail_path
 
-        # Build video clip
-        from moviepy.editor import (
-            AudioFileClip,
-            CompositeAudioClip,
-            ImageSequenceClip,
-            concatenate_videoclips,
-        )
+        # Build video clip — support both moviepy v1 and v2
+        try:
+            from moviepy import (
+                AudioFileClip,
+                CompositeAudioClip,
+                ImageSequenceClip,
+                concatenate_videoclips,
+            )
+        except ImportError:
+            from moviepy.editor import (
+                AudioFileClip,
+                CompositeAudioClip,
+                ImageSequenceClip,
+                concatenate_videoclips,
+            )
 
         video_clip = ImageSequenceClip(frame_paths, fps=fps)
 
