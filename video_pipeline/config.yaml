@@ -56,6 +56,25 @@ visual:
     - "#BB8FCE"  # Lavender
     - "#85C1E9"  # Light blue
 
+  # AI image generation engine: "replicate" or "pillow" (basic fallback)
+  engine: "replicate"
+  # Replicate model for image generation (Flux 1.1 Pro recommended)
+  replicate_model: "black-forest-labs/flux-1.1-pro"
+  # Set your API token here or via REPLICATE_API_TOKEN env var
+  replicate_api_token: ""
+  # Style prefix prepended to every image generation prompt
+  style_prefix: >-
+    3D animated Pixar-style render, cute cartoon characters,
+    vibrant saturated colors, soft lighting, clean smooth surfaces,
+    rounded friendly shapes, children's educational content,
+    high quality 4K render, studio lighting,
+  # Negative prompt to avoid unwanted styles
+  negative_prompt: >-
+    scary, dark, violent, realistic, photographic,
+    text, watermark, blurry, low quality, distorted
+  # Max AI-generated images per video (one per scene, controls cost)
+  max_ai_images_per_video: 50
+
 # --- Background music ---
 music:
   mode: "procedural"   # procedural (free), file, or none

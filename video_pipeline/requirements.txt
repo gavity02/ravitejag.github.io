@@ -10,6 +10,8 @@ edge-tts>=6.1
 
 # Visual generation
 Pillow>=10.0
+replicate>=0.25.0  # AI image generation via Flux/SDXL
+httpx>=0.25.0      # Async HTTP for downloading generated images
 
 # Video composition
 moviepy>=1.0.3

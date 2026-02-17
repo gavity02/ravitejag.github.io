@@ -55,7 +55,23 @@ class VisualConfig(BaseModel):
         ]
     )
     font_dir: str = ""  # Path to custom fonts, empty = system fonts
-    # Pillow doesn't need a GPU - runs on CPU fine
+
+    # AI image generation via Replicate
+    engine: str = "replicate"  # "replicate" for AI images, "pillow" for basic shapes
+    replicate_model: str = "black-forest-labs/flux-1.1-pro"
+    replicate_api_token: str = ""  # Set via REPLICATE_API_TOKEN env var or here
+    style_prefix: str = (
+        "3D animated Pixar-style render, cute cartoon characters, "
+        "vibrant saturated colors, soft lighting, clean smooth surfaces, "
+        "rounded friendly shapes, children's educational content, "
+        "high quality 4K render, studio lighting, "
+    )
+    negative_prompt: str = (
+        "scary, dark, violent, realistic, photographic, "
+        "text, watermark, blurry, low quality, distorted"
+    )
+    # Cost control: max images per video (one per scene)
+    max_ai_images_per_video: int = 50
 
 
 class MusicConfig(BaseModel):

@@ -470,8 +470,9 @@ class ScriptwriterAgent(BaseAgent):
                 duration_seconds=6.0,
                 narration_text=f"Let's count {objects}! Are you ready?",
                 visual_description=(
-                    f"Title card with colorful {objects} bouncing into view. "
-                    f"Text reads 'Let's Count {objects.title()}!'"
+                    f"A cheerful 3D animated nursery room with colorful {objects} "
+                    f"floating in from the sides, bright playful atmosphere, "
+                    f"soft pastel colors, welcoming scene for toddlers"
                 ),
                 background_color=self._bg_color(0),
                 elements=[
@@ -492,9 +493,10 @@ class ScriptwriterAgent(BaseAgent):
                     duration_seconds=5.0,
                     narration_text=f"{number}! {number} {obj_label}!",
                     visual_description=(
-                        f"Large number '{number}' in the center with "
-                        f"{number} {objects} arranged around it. "
-                        f"Each {objects.rstrip('s')} appears with a pop animation."
+                        f"A cute 3D animated scene with a large colorful number "
+                        f"'{number}' in the center, surrounded by {number} adorable "
+                        f"3D cartoon {objects}, soft pastel nursery background, "
+                        f"cheerful playful atmosphere for toddlers"
                     ),
                     background_color=self._bg_color(i + 1),
                     elements=[
@@ -513,8 +515,9 @@ class ScriptwriterAgent(BaseAgent):
                 duration_seconds=7.0,
                 narration_text="Great job! You counted so well! See you next time!",
                 visual_description=(
-                    "Celebration scene with confetti and all numbers displayed. "
-                    "Text reads 'Great Job!'"
+                    "A joyful 3D animated celebration scene with colorful confetti, "
+                    "balloons, and sparkles, adorable cartoon characters cheering, "
+                    "bright cheerful nursery room background"
                 ),
                 background_color=self._bg_color(0),
                 elements=[
@@ -551,8 +554,9 @@ class ScriptwriterAgent(BaseAgent):
                 duration_seconds=6.0,
                 narration_text="Let's learn colors! So many beautiful colors to see!",
                 visual_description=(
-                    "Title card with rainbow swirl animation. "
-                    "Text reads 'Let's Learn Colors!'"
+                    "A beautiful 3D animated rainbow swirl with all colors "
+                    "of the rainbow spiraling together, bright cheerful "
+                    "nursery room background, inviting and fun"
                 ),
                 background_color=self._bg_color(0),
                 elements=[
@@ -572,9 +576,9 @@ class ScriptwriterAgent(BaseAgent):
                     duration_seconds=7.0,
                     narration_text=f"This is {color}! Can you say {color}?",
                     visual_description=(
-                        f"Screen fills with {color}. A large {color} object "
-                        f"(ball, flower, or star) pulses gently in the center. "
-                        f"The word '{color.upper()}' appears below."
+                        f"A cute 3D animated scene filled with {color} colored objects, "
+                        f"adorable {color} 3D toys and decorations, a friendly cartoon "
+                        f"character presenting the color, soft glowing {color} background"
                     ),
                     background_color=hex_color,
                     elements=[
@@ -593,8 +597,9 @@ class ScriptwriterAgent(BaseAgent):
                 duration_seconds=7.0,
                 narration_text="Great job! You learned so many colors! See you next time!",
                 visual_description=(
-                    "All colors appear as a rainbow arc. "
-                    "Text reads 'Great Job!' Confetti falls."
+                    "A joyful 3D animated celebration with a beautiful rainbow arc, "
+                    "colorful confetti and balloons, adorable cartoon characters "
+                    "celebrating, bright cheerful atmosphere"
                 ),
                 background_color=self._bg_color(1),
                 elements=[
@@ -649,8 +654,9 @@ class ScriptwriterAgent(BaseAgent):
                 duration_seconds=6.0,
                 narration_text="Let's learn shapes! Shapes are everywhere!",
                 visual_description=(
-                    "Title card with animated shapes floating around. "
-                    "Text reads 'Let's Learn Shapes!'"
+                    "A colorful 3D animated playroom with various friendly "
+                    "3D shapes floating and bouncing gently, soft pastel "
+                    "background, warm inviting atmosphere for toddlers"
                 ),
                 background_color=self._bg_color(0),
                 elements=[
@@ -673,8 +679,9 @@ class ScriptwriterAgent(BaseAgent):
                         f"Can you say {shape}?"
                     ),
                     visual_description=(
-                        f"Large {shape} drawn in the center, rotating slowly. "
-                        f"The word '{shape.upper()}' appears below the shape."
+                        f"A cute 3D animated {shape} floating in the center of a "
+                        f"colorful playroom, smooth glossy surface with soft shadows, "
+                        f"friendly educational toy aesthetic, bright cheerful scene"
                     ),
                     background_color=self._bg_color(i + 1),
                     elements=[
@@ -693,8 +700,9 @@ class ScriptwriterAgent(BaseAgent):
                 duration_seconds=7.0,
                 narration_text="Great job! You learned all the shapes! See you next time!",
                 visual_description=(
-                    "All shapes line up together and bounce. "
-                    "Text reads 'Great Job!'"
+                    "A joyful 3D animated scene with all the shapes gathered "
+                    "together bouncing happily, colorful confetti, bright "
+                    "celebration atmosphere, cheerful nursery playroom"
                 ),
                 background_color=self._bg_color(2),
                 elements=[
@@ -741,8 +749,9 @@ class ScriptwriterAgent(BaseAgent):
                 duration_seconds=6.0,
                 narration_text=f"Let's learn {range_label}! Ready? Let's go!",
                 visual_description=(
-                    f"Title card with animated letters. "
-                    f"Text reads 'Learn {range_label.title()}!'"
+                    f"A cheerful 3D animated scene with colorful 3D alphabet "
+                    f"letters floating and bouncing, bright nursery room "
+                    f"background, fun educational atmosphere for toddlers"
                 ),
                 background_color=self._bg_color(0),
                 elements=[
@@ -762,9 +771,10 @@ class ScriptwriterAgent(BaseAgent):
                     duration_seconds=6.0,
                     narration_text=f"{letter} is for {word}!",
                     visual_description=(
-                        f"Large uppercase letter '{letter}' on the left, "
-                        f"a colorful illustration of a {word.lower()} on the right. "
-                        f"The word '{word}' appears below the illustration."
+                        f"A cute 3D animated scene with a large colorful letter "
+                        f"'{letter}' on the left and an adorable 3D cartoon "
+                        f"{word.lower()} on the right, bright cheerful nursery "
+                        f"background, educational and playful"
                     ),
                     background_color=self._bg_color(i + 1),
                     elements=[
@@ -783,8 +793,9 @@ class ScriptwriterAgent(BaseAgent):
                 duration_seconds=7.0,
                 narration_text="Great job! You learned your letters! See you next time!",
                 visual_description=(
-                    "All letters appear in a colorful arc. "
-                    "Text reads 'Great Job!' Stars twinkle."
+                    "A joyful 3D animated celebration with colorful alphabet "
+                    "letters arranged in a rainbow arc, sparkling stars and "
+                    "confetti, adorable cartoon characters celebrating"
                 ),
                 background_color=self._bg_color(3),
                 elements=[
@@ -827,9 +838,9 @@ class ScriptwriterAgent(BaseAgent):
                     f"Do you know what sounds they make?"
                 ),
                 visual_description=(
-                    f"Title card showing a {theme} scene. "
-                    f"Text reads '{theme.title()} Animals!' "
-                    f"Cheerful music plays."
+                    f"A cute 3D animated {theme} scene with a colorful barn "
+                    f"and green fields, adorable cartoon {theme} animals "
+                    f"peeking out, sunny cheerful day, Pixar-style render"
                 ),
                 background_color=self._bg_color(0),
                 elements=[
@@ -852,10 +863,10 @@ class ScriptwriterAgent(BaseAgent):
                         f"Can you say {sound}?"
                     ),
                     visual_description=(
-                        f"A friendly cartoon {animal} appears in the center "
-                        f"and performs its sound animation. "
-                        f"The word '{animal.upper()}' appears below. "
-                        f"A speech bubble shows '{sound}!'"
+                        f"An adorable 3D cartoon {animal} character with big "
+                        f"expressive eyes and a friendly smile, standing in a "
+                        f"colorful natural setting, Pixar-style render, "
+                        f"soft lighting, cute and appealing to toddlers"
                     ),
                     background_color=self._bg_color(i + 1),
                     elements=[
@@ -877,8 +888,9 @@ class ScriptwriterAgent(BaseAgent):
                     "Great job! You met all the animals! See you next time!"
                 ),
                 visual_description=(
-                    "All animals gather together in the scene and wave. "
-                    "Text reads 'Great Job!'"
+                    "A joyful 3D animated scene with all the adorable cartoon "
+                    "animals gathered together in a colorful meadow, waving "
+                    "and celebrating, bright sunshine, Pixar-style render"
                 ),
                 background_color=self._bg_color(2),
                 elements=[
@@ -991,8 +1003,9 @@ class ScriptwriterAgent(BaseAgent):
                 duration_seconds=6.0,
                 narration_text=f"Let's sing {song_name}! Sing along with me!",
                 visual_description=(
-                    f"Title card with musical notes floating around. "
-                    f"Text reads '{song_name}' in playful lettering."
+                    f"A cheerful 3D animated storybook opening scene with "
+                    f"golden musical notes floating around, colorful stage "
+                    f"curtains, bright whimsical fairy-tale atmosphere"
                 ),
                 background_color=self._bg_color(0),
                 elements=[
@@ -1012,8 +1025,10 @@ class ScriptwriterAgent(BaseAgent):
                     duration_seconds=8.0,
                     narration_text=verse,
                     visual_description=(
-                        f"Animated scene illustrating the lyrics: '{verse.split(chr(10))[0]}'. "
-                        f"Characters and objects move in sync with the narration."
+                        f"A cute 3D animated storybook scene illustrating: "
+                        f"'{verse.split(chr(10))[0]}', adorable cartoon "
+                        f"characters acting out the lyrics, bright colorful "
+                        f"fairy-tale background, whimsical atmosphere"
                     ),
                     background_color=self._bg_color(i + 1),
                     elements=[
@@ -1031,8 +1046,9 @@ class ScriptwriterAgent(BaseAgent):
                 duration_seconds=7.0,
                 narration_text="Great job singing along! See you next time!",
                 visual_description=(
-                    "Characters wave goodbye with musical notes and confetti. "
-                    "Text reads 'Great Job!'"
+                    "A joyful 3D animated farewell scene with adorable "
+                    "cartoon characters waving goodbye, golden musical notes "
+                    "and colorful confetti, bright celebration atmosphere"
                 ),
                 background_color=self._bg_color(3),
                 elements=[
