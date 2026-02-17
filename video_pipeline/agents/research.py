@@ -153,6 +153,40 @@ TOPIC_DATABASE: dict[VideoType, list[dict]] = {
             "search_volume": "high",
         },
     ],
+    VideoType.ANIME_DANCE: [
+        {
+            "title": "Anime Hip-Hop Dance on Tokyo Balcony at Night",
+            "keywords": [
+                "anime dance", "hip hop anime", "tokyo night", "city pop",
+                "neon anime", "anime music video", "lofi hip hop anime",
+            ],
+            "search_volume": "high",
+        },
+        {
+            "title": "Neon City Pop Dancer - 80s Anime Vibes",
+            "keywords": [
+                "city pop anime", "80s anime", "neon dance", "japanese city pop",
+                "retro anime", "synthwave anime",
+            ],
+            "search_volume": "high",
+        },
+        {
+            "title": "Midnight Tokyo Groove - Anime Dance Loop",
+            "keywords": [
+                "anime loop", "tokyo night loop", "chill anime", "anime groove",
+                "japanese lofi", "anime hip hop beat",
+            ],
+            "search_volume": "medium",
+        },
+        {
+            "title": "Stylish Anime Dancer - City Pop Nightscape",
+            "keywords": [
+                "stylish anime", "anime nightscape", "city pop dance",
+                "anime aesthetic", "vaporwave anime",
+            ],
+            "search_volume": "medium",
+        },
+    ],
 }
 
 
@@ -238,6 +272,7 @@ class ResearchAgent(BaseAgent):
             VideoType.ANIMALS: "animals for babies",
             VideoType.LULLABY: "lullaby for baby sleep",
             VideoType.NURSERY_RHYME: "nursery rhymes for babies",
+            VideoType.ANIME_DANCE: "anime hip hop dance city pop",
         }
 
         query = queries.get(video_type, "baby learning videos")

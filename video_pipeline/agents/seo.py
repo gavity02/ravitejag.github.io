@@ -58,6 +58,11 @@ _TYPE_TAG_MAP: dict[VideoType, list[str]] = {
         "nursery rhyme", "kids song", "children song",
         "sing along", "rhymes", "preschool songs",
     ],
+    VideoType.ANIME_DANCE: [
+        "anime", "anime dance", "hip hop anime", "city pop",
+        "tokyo night", "neon anime", "anime music video",
+        "lofi anime", "80s japanese", "synthwave",
+    ],
 }
 
 
@@ -112,7 +117,7 @@ class SEOAgent(BaseAgent):
             description=description,
             tags=tags,
             category_id="24",  # Entertainment
-            made_for_kids=True,
+            made_for_kids=video_type != VideoType.ANIME_DANCE,
             thumbnail_path=thumbnail_path,
         )
 
@@ -155,12 +160,15 @@ class SEOAgent(BaseAgent):
             if len(candidate) <= 70:
                 title = candidate
 
-        # Append audience cue if there is room
-        audience_cues = [
-            "for Babies and Toddlers",
-            "for Babies",
-            "for Kids",
-        ]
+        # Append audience cue if there is room (skip for non-kids content)
+        if video_type == VideoType.ANIME_DANCE:
+            audience_cues = ["| Anime Music Video"]
+        else:
+            audience_cues = [
+                "for Babies and Toddlers",
+                "for Babies",
+                "for Kids",
+            ]
         for cue in audience_cues:
             if cue.lower() in title.lower():
                 break
@@ -185,6 +193,7 @@ class SEOAgent(BaseAgent):
             VideoType.ANIMALS: "Amazing",
             VideoType.LULLABY: "Happy",
             VideoType.NURSERY_RHYME: "Fun",
+            VideoType.ANIME_DANCE: "Amazing",
         }
         return mapping.get(video_type, "Learn")
 
@@ -225,6 +234,7 @@ class SEOAgent(BaseAgent):
             VideoType.ANIMALS: "#Animals #AnimalSounds #ZooAnimals",
             VideoType.LULLABY: "#Lullaby #BabySleep #SoothingMusic",
             VideoType.NURSERY_RHYME: "#NurseryRhyme #KidsSongs #SingAlong",
+            VideoType.ANIME_DANCE: "#Anime #CityPop #HipHop #TokyoNight #Neon",
         }
         extra = type_hashtags.get(video_type, "")
         if extra:

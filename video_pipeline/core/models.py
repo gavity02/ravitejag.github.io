@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field
 
 
 class VideoType(str, enum.Enum):
-    """Types of baby content videos."""
+    """Types of video content."""
 
     COUNTING = "counting"
     COLORS = "colors"
@@ -24,6 +24,7 @@ class VideoType(str, enum.Enum):
     ANIMALS = "animals"
     LULLABY = "lullaby"
     NURSERY_RHYME = "nursery_rhyme"
+    ANIME_DANCE = "anime_dance"
 
 
 class TopicSuggestion(BaseModel):

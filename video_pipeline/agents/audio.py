@@ -63,11 +63,33 @@ PLAYFUL_SCALE: list[float] = [
     523.25,  # C5
 ]
 
+# City Pop scale: jazzy major 7th / 9th flavour (Cmaj7 + D9 voicings)
+# Mixes bass notes (octave 3) with sparkly highs (octave 5) for that
+# 80s Japanese City Pop shimmer.
+CITY_POP_BASS: list[float] = [
+    130.81,  # C3
+    146.83,  # D3
+    164.81,  # E3
+    174.61,  # F3
+    196.00,  # G3
+]
+
+CITY_POP_MELODY: list[float] = [
+    523.25,  # C5
+    587.33,  # D5
+    659.25,  # E5
+    783.99,  # G5
+    880.00,  # A5
+    987.77,  # B5
+    1046.50, # C6
+]
+
 # Tempo ranges per style (min BPM, max BPM)
 STYLE_TEMPO: dict[str, tuple[int, int]] = {
     "calm": (60, 80),
     "upbeat": (100, 120),
     "playful": (90, 110),
+    "city_pop": (112, 128),
 }
 
 # Scale mapping per style
@@ -75,6 +97,7 @@ STYLE_SCALE: dict[str, list[float]] = {
     "calm": PENTATONIC_SCALE,
     "upbeat": MAJOR_SCALE,
     "playful": PLAYFUL_SCALE,
+    "city_pop": CITY_POP_MELODY,
 }
 
 # Average words-per-second for rough narration duration estimation.
@@ -322,9 +345,22 @@ class AudioAgent(BaseAgent):
         # Build the melody as raw PCM bytes
         pcm_data: list[bytes] = []
         elapsed: float = 0.0
+        is_city_pop: bool = style == "city_pop"
+        beat_count: int = 0
 
         while elapsed < duration_seconds:
-            frequency: float = random.choice(scale)
+            if is_city_pop:
+                # City Pop pattern: alternate heavy bass with sparkly melody
+                # Every 4th beat is a bass note, others are melody
+                if beat_count % 4 == 0:
+                    frequency = random.choice(CITY_POP_BASS)
+                    volume = 0.4  # heavier bass
+                else:
+                    frequency = random.choice(scale)
+                    volume = 0.25  # lighter melody / synth sparkle
+            else:
+                frequency = random.choice(scale)
+                volume = 0.3
 
             # Note duration: between half a beat and a full beat
             note_duration: float = beat_duration * random.uniform(0.5, 1.0)
@@ -338,10 +374,11 @@ class AudioAgent(BaseAgent):
                 frequency=frequency,
                 duration=note_duration,
                 sample_rate=sample_rate,
-                volume=0.3,
+                volume=volume,
             )
             pcm_data.append(tone_bytes)
             elapsed += note_duration
+            beat_count += 1
 
         # Write the WAV file
         raw_audio: bytes = b"".join(pcm_data)

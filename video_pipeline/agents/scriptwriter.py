@@ -251,6 +251,72 @@ LULLABY_LYRICS: dict[str, list[str]] = {
     ],
 }
 
+# ---------------------------------------------------------------------------
+# Anime dance scene data
+# ---------------------------------------------------------------------------
+
+# Dark neon backgrounds for the Tokyo night aesthetic
+NEON_BACKGROUNDS: list[str] = [
+    "#0a0a1a",  # Deep night
+    "#0d0d2b",  # Midnight blue
+    "#120821",  # Dark violet night
+    "#0b1121",  # Deep navy
+    "#10061a",  # Dark purple
+    "#0a0f1e",  # Ink blue
+    "#0e0a1f",  # Deep plum night
+    "#080d1a",  # Blackened blue
+]
+
+# Neon accent colors for signs, reflections, and lighting
+NEON_ACCENTS: list[str] = [
+    "#FF00FF",  # Magenta
+    "#00FFFF",  # Cyan
+    "#FF1493",  # Deep pink
+    "#00FF7F",  # Spring green
+    "#FF6347",  # Tomato neon
+    "#7B68EE",  # Medium slate blue
+    "#FFD700",  # Gold
+    "#FF4500",  # Neon orange
+]
+
+# Dance poses described for each scene beat
+DANCE_POSES: list[dict[str, str]] = [
+    {"pose": "arms_raised", "desc": "Arms raised high with weight on back foot, hair flowing upward"},
+    {"pose": "body_wave", "desc": "Fluid body wave rolling from chest to knees, jacket rippling"},
+    {"pose": "side_step", "desc": "Sharp side-step freeze with one arm extended, fingers spread"},
+    {"pose": "spin", "desc": "Mid-spin with hair and clothing trailing in a spiral arc"},
+    {"pose": "lean_back", "desc": "Deep lean-back with one hand on hat, other arm sweeping low"},
+    {"pose": "pop_lock", "desc": "Popping chest hit with arms locked at right angles"},
+    {"pose": "groove_bounce", "desc": "Relaxed bounce with shoulders rolling, head nodding to the beat"},
+    {"pose": "slide_glide", "desc": "Smooth glide-step across the floor, trailing neon reflections"},
+    {"pose": "kick_out", "desc": "Dynamic kick-out with opposite arm swing, jacket flaring"},
+    {"pose": "final_pose", "desc": "Confident final stance, one hand pointing skyward, city lights blazing behind"},
+]
+
+# Setting descriptions
+SETTING_VISUALS: dict[str, str] = {
+    "tokyo_balcony": (
+        "A wide Tokyo balcony overlooking a dense cityscape at night. "
+        "Neon signs in Japanese katakana glow pink, cyan, and gold below. "
+        "The railing catches reflections from the city lights."
+    ),
+    "neon_rooftop": (
+        "A rooftop terrace high above the Tokyo skyline. "
+        "Giant LED billboards flash in the distance. "
+        "Puddles from recent rain mirror the neon glow."
+    ),
+    "shibuya_crossing": (
+        "The iconic Shibuya crossing at midnight, empty and lit by "
+        "towering video screens. Crosswalk lines glow faintly. "
+        "Rain-slicked asphalt reflects every color."
+    ),
+    "akihabara_street": (
+        "A narrow Akihabara side street bathed in electric signage. "
+        "Vending machines cast blue and orange light. "
+        "Cables criss-cross overhead between buildings."
+    ),
+}
+
 # Dark background colors used for lullaby scenes
 LULLABY_BACKGROUNDS: list[str] = [
     "#1a1a2e",
@@ -319,6 +385,7 @@ class ScriptwriterAgent(BaseAgent):
             VideoType.ANIMALS: self._generate_animals_script,
             VideoType.LULLABY: self._generate_lullaby_script,
             VideoType.NURSERY_RHYME: self._generate_nursery_rhyme_script,
+            VideoType.ANIME_DANCE: self._generate_anime_dance_script,
         }
 
         generator = generators.get(plan.video_type)
@@ -331,10 +398,16 @@ class ScriptwriterAgent(BaseAgent):
         total_duration = sum(scene.duration_seconds for scene in scenes)
 
         # Build the Script model
-        voice_style = "calm" if plan.video_type == VideoType.LULLABY else "cheerful"
+        voice_style = (
+            "calm" if plan.video_type == VideoType.LULLABY
+            else "energetic" if plan.video_type == VideoType.ANIME_DANCE
+            else "cheerful"
+        )
         music_style = (
             "calm"
             if plan.video_type == VideoType.LULLABY
+            else "city_pop"
+            if plan.video_type == VideoType.ANIME_DANCE
             else "playful"
             if plan.video_type == VideoType.NURSERY_RHYME
             else "upbeat"
@@ -964,6 +1037,160 @@ class ScriptwriterAgent(BaseAgent):
                 background_color=self._bg_color(3),
                 elements=[
                     {"type": "text", "value": "Great Job!", "color": "#FFD700"},
+                ],
+                transition="fade",
+            )
+        )
+
+        return scenes
+
+    # ------------------------------------------------------------------
+    # ANIME_DANCE script generator
+    # ------------------------------------------------------------------
+
+    def _generate_anime_dance_script(self, plan: ContentPlan) -> list[ScriptScene]:
+        """Generate scenes for an anime hip-hop dance video.
+
+        Structure:
+            1. Establishing shot of the neon Tokyo setting
+            2. Character introduction on the balcony/location
+            3. Dance sequence scenes (one per pose/beat)
+            4. Climactic final pose with full neon cityscape
+            5. Outro/fade-out
+        """
+        details = plan.topic_details
+        setting: str = details.get("setting", "tokyo_balcony")
+        num_dance_scenes: int = details.get("num_dance_scenes", 8)
+
+        setting_desc = SETTING_VISUALS.get(setting, SETTING_VISUALS["tokyo_balcony"])
+
+        scenes: list[ScriptScene] = []
+        scene_num = 1
+
+        # --- Scene 1: Establishing shot ---
+        scenes.append(
+            ScriptScene(
+                scene_number=scene_num,
+                duration_seconds=8.0,
+                narration_text="",
+                visual_description=(
+                    f"Wide establishing shot. {setting_desc} "
+                    "Cinematic camera slowly pans across the skyline. "
+                    "Neon signs flicker to life one by one."
+                ),
+                background_color=NEON_BACKGROUNDS[0],
+                elements=[
+                    {"type": "neon_cityscape", "value": setting, "color": NEON_ACCENTS[0]},
+                ],
+                transition="fade",
+            )
+        )
+        scene_num += 1
+
+        # --- Scene 2: Character introduction ---
+        scenes.append(
+            ScriptScene(
+                scene_number=scene_num,
+                duration_seconds=6.0,
+                narration_text="",
+                visual_description=(
+                    "A stylish anime character steps into frame on the balcony. "
+                    "They wear a loose bomber jacket, baggy pants, and a cap. "
+                    "Wind catches their hair and jacket edges. "
+                    "The city hums with neon glow behind them."
+                ),
+                background_color=NEON_BACKGROUNDS[1],
+                elements=[
+                    {"type": "neon_cityscape", "value": setting, "color": NEON_ACCENTS[1]},
+                    {"type": "dancer_silhouette", "value": "intro_stance", "color": "#FFFFFF"},
+                ],
+                transition="fade",
+            )
+        )
+        scene_num += 1
+
+        # --- Dance sequence scenes ---
+        poses = DANCE_POSES[:num_dance_scenes]
+        for i, pose_data in enumerate(poses):
+            accent = NEON_ACCENTS[i % len(NEON_ACCENTS)]
+            bg = NEON_BACKGROUNDS[(i + 2) % len(NEON_BACKGROUNDS)]
+
+            # Camera direction varies per scene for cinematic feel
+            camera_directions = [
+                "Camera slowly pans right, following the dancer's movement.",
+                "Low-angle shot looking up at the dancer against the neon sky.",
+                "Camera tracks in closer, neon reflections streaking across the lens.",
+                "Wide shot pulls back to show the full cityscape framing the dancer.",
+                "Dutch angle tilts as the beat drops, neon signs pulse brighter.",
+                "Slow dolly-in focusing on the dancer's upper body and expression.",
+                "Camera orbits slightly, catching different neon reflections.",
+                "Bird's-eye pullback revealing the dancer on the balcony amidst the city.",
+                "Tight medium shot, city bokeh blurring beautifully in the background.",
+                "Final wide shot, every neon sign blazing at full intensity.",
+            ]
+            camera = camera_directions[i % len(camera_directions)]
+
+            scenes.append(
+                ScriptScene(
+                    scene_number=scene_num,
+                    duration_seconds=6.0,
+                    narration_text="",
+                    visual_description=(
+                        f"Dance beat {i + 1}: {pose_data['desc']}. "
+                        f"{camera} "
+                        f"Neon {accent} light casts colored reflections on the floor "
+                        "and the dancer's clothing. Secondary animation on hair and "
+                        "jacket fabric shows natural weight and momentum."
+                    ),
+                    background_color=bg,
+                    elements=[
+                        {"type": "neon_cityscape", "value": setting, "color": accent},
+                        {"type": "dancer_silhouette", "value": pose_data["pose"], "color": accent},
+                        {"type": "neon_reflection", "value": "floor", "color": accent},
+                    ],
+                    transition="cut" if i % 3 == 2 else "fade",
+                )
+            )
+            scene_num += 1
+
+        # --- Climax: Final pose ---
+        scenes.append(
+            ScriptScene(
+                scene_number=scene_num,
+                duration_seconds=8.0,
+                narration_text="",
+                visual_description=(
+                    "The dancer hits a powerful final pose - one hand pointed "
+                    "at the sky, weight anchored. Every neon sign in the Tokyo "
+                    "skyline blazes at maximum brightness. A slow-motion wind "
+                    "catches the jacket and hair. Camera pulls back into a "
+                    "wide cinematic shot of the full city panorama."
+                ),
+                background_color=NEON_BACKGROUNDS[0],
+                elements=[
+                    {"type": "neon_cityscape", "value": setting, "color": "#FF00FF"},
+                    {"type": "dancer_silhouette", "value": "final_pose", "color": "#00FFFF"},
+                    {"type": "neon_reflection", "value": "full_bloom", "color": "#FF00FF"},
+                ],
+                transition="fade",
+            )
+        )
+        scene_num += 1
+
+        # --- Outro: Fade to city lights ---
+        scenes.append(
+            ScriptScene(
+                scene_number=scene_num,
+                duration_seconds=6.0,
+                narration_text="",
+                visual_description=(
+                    "The dancer's silhouette slowly fades as the camera "
+                    "drifts upward into the night sky. City lights twinkle "
+                    "below like earthbound stars. The neon glow softens."
+                ),
+                background_color="#050510",
+                elements=[
+                    {"type": "neon_cityscape", "value": "distant", "color": "#7B68EE"},
                 ],
                 transition="fade",
             )

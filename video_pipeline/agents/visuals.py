@@ -409,6 +409,9 @@ class VisualGeneratorAgent(BaseAgent):
             "text_overlay": self._render_text_overlay,
             "lullaby_visual": self._render_lullaby_visual,
             "nursery_visual": self._render_nursery_visual,
+            "neon_cityscape": self._render_neon_cityscape,
+            "dancer_silhouette": self._render_dancer_silhouette,
+            "neon_reflection": self._render_neon_reflection,
         }
 
     # ------------------------------------------------------------------ #
@@ -721,6 +724,317 @@ class VisualGeneratorAgent(BaseAgent):
             self._draw_centred_text(
                 draw, text, width, height, font_size=72, fill=text_color,
             )
+
+    # ------------------------------------------------------------------ #
+    # Anime dance renderers
+    # ------------------------------------------------------------------ #
+
+    def _render_neon_cityscape(
+        self,
+        draw: ImageDraw.ImageDraw,
+        img: Image.Image,
+        element: dict[str, Any],
+        width: int,
+        height: int,
+        scene: ScriptScene,
+    ) -> None:
+        """Render a neon-lit Tokyo cityscape at night.
+
+        Draws a dark gradient sky, building silhouettes of varying heights,
+        glowing neon sign rectangles, and scattered light bokeh.
+        """
+        accent: str = element.get("color", "#FF00FF")
+        setting: str = element.get("value", "tokyo_balcony")
+
+        # -- Dark gradient sky (top: deep navy -> bottom: dark purple) --
+        for y in range(height):
+            ratio = y / height
+            r = int(5 + 15 * ratio)
+            g = int(5 + 8 * ratio)
+            b = int(20 + 25 * (1 - ratio))
+            draw.line([(0, y), (width, y)], fill=(r, g, b))
+
+        # -- Building silhouettes along the bottom half --
+        horizon_y = int(height * 0.45)
+        num_buildings = random.randint(18, 30)
+        building_width_range = (40, 120)
+
+        for i in range(num_buildings):
+            bx = int(i * width / num_buildings) + random.randint(-20, 20)
+            bw = random.randint(*building_width_range)
+            bh = random.randint(int(height * 0.15), int(height * 0.50))
+            by = horizon_y + random.randint(-30, 30)
+
+            # Dark building body
+            shade = random.randint(8, 25)
+            draw.rectangle(
+                [bx, by, bx + bw, height],
+                fill=(shade, shade, shade + 5),
+            )
+
+            # Lit windows (small yellow/white rectangles)
+            win_size = 4
+            win_gap = 12
+            for wy in range(by + 8, by + bh, win_gap):
+                for wx in range(bx + 6, bx + bw - 6, win_gap):
+                    if random.random() < 0.4:
+                        brightness = random.randint(160, 255)
+                        warmth = random.randint(140, 220)
+                        draw.rectangle(
+                            [wx, wy, wx + win_size, wy + win_size],
+                            fill=(brightness, warmth, random.randint(50, 120)),
+                        )
+
+        # -- Neon signs (glowing rectangles on some buildings) --
+        accent_rgb = self._hex_to_rgb(accent)
+        num_signs = random.randint(5, 10)
+        for _ in range(num_signs):
+            sx = random.randint(0, width - 80)
+            sy = random.randint(horizon_y - 40, int(height * 0.7))
+            sw = random.randint(40, 100)
+            sh = random.randint(12, 25)
+
+            # Glow aura (larger, semi-transparent rectangle behind)
+            glow_expand = 6
+            glow_color = tuple(min(255, c + 40) for c in accent_rgb) + (80,)
+            glow_img = Image.new("RGBA", (sw + glow_expand * 2, sh + glow_expand * 2), (0, 0, 0, 0))
+            glow_draw = ImageDraw.Draw(glow_img)
+            glow_draw.rectangle(
+                [0, 0, sw + glow_expand * 2, sh + glow_expand * 2],
+                fill=glow_color,
+            )
+            img.paste(
+                glow_img.convert("RGB"),
+                (sx - glow_expand, sy - glow_expand),
+            )
+            # Bright sign core
+            draw.rectangle(
+                [sx, sy, sx + sw, sy + sh],
+                fill=accent_rgb,
+            )
+
+        # -- Bokeh lights (circular glowing dots) --
+        num_bokeh = random.randint(15, 35)
+        for _ in range(num_bokeh):
+            bkx = random.randint(0, width)
+            bky = random.randint(0, height)
+            bkr = random.randint(3, 15)
+            # Pick a random neon color
+            neon_options = ["#FF00FF", "#00FFFF", "#FF1493", "#00FF7F", "#FFD700"]
+            bokeh_color = self._hex_to_rgb(random.choice(neon_options))
+            # Dim the bokeh to simulate depth-of-field
+            dimmed = tuple(max(0, c - random.randint(40, 100)) for c in bokeh_color)
+            draw.ellipse(
+                [bkx - bkr, bky - bkr, bkx + bkr, bky + bkr],
+                fill=dimmed,
+            )
+
+        # -- Balcony railing (if applicable) --
+        if "balcony" in setting or "rooftop" in setting:
+            railing_y = int(height * 0.75)
+            # Horizontal bar
+            draw.rectangle(
+                [0, railing_y, width, railing_y + 4],
+                fill=(60, 60, 70),
+            )
+            # Vertical posts
+            for rx in range(0, width, 50):
+                draw.rectangle(
+                    [rx, railing_y, rx + 3, railing_y + 40],
+                    fill=(50, 50, 60),
+                )
+
+    def _render_dancer_silhouette(
+        self,
+        draw: ImageDraw.ImageDraw,
+        img: Image.Image,
+        element: dict[str, Any],
+        width: int,
+        height: int,
+        scene: ScriptScene,
+    ) -> None:
+        """Render a stylized dancer silhouette with neon edge-lighting.
+
+        The dancer is drawn as a dark silhouette in the centre with a
+        colored glow outline that simulates neon rim-lighting from the
+        city behind them.
+        """
+        accent: str = element.get("color", "#00FFFF")
+        pose: str = element.get("value", "groove_bounce")
+        accent_rgb = self._hex_to_rgb(accent)
+
+        cx = width // 2
+        ground_y = int(height * 0.82)
+
+        # Head
+        head_r = 28
+        head_y = ground_y - 260
+
+        # Glow outline (slightly larger circles/lines behind the silhouette)
+        glow_offset = 4
+
+        # -- Draw glow layer first --
+        glow_color = accent_rgb
+
+        # Head glow
+        draw.ellipse(
+            [cx - head_r - glow_offset, head_y - head_r - glow_offset,
+             cx + head_r + glow_offset, head_y + head_r + glow_offset],
+            fill=None,
+            outline=glow_color,
+            width=3,
+        )
+
+        # Body glow line
+        body_top = head_y + head_r
+        body_bottom = ground_y - 80
+        draw.line(
+            [(cx, body_top), (cx, body_bottom)],
+            fill=glow_color,
+            width=8 + glow_offset,
+        )
+
+        # Pose-dependent arm and leg positions
+        arm_y = body_top + 30
+        if pose in ("arms_raised", "final_pose"):
+            # Arms up
+            draw.line([(cx, arm_y), (cx - 70, arm_y - 80)], fill=glow_color, width=6)
+            draw.line([(cx, arm_y), (cx + 70, arm_y - 80)], fill=glow_color, width=6)
+        elif pose in ("side_step", "pop_lock"):
+            # One arm out, one down
+            draw.line([(cx, arm_y), (cx - 100, arm_y + 10)], fill=glow_color, width=6)
+            draw.line([(cx, arm_y), (cx + 40, arm_y + 70)], fill=glow_color, width=6)
+        elif pose == "spin":
+            # Arms out in T-pose mid-spin
+            draw.line([(cx, arm_y), (cx - 90, arm_y)], fill=glow_color, width=6)
+            draw.line([(cx, arm_y), (cx + 90, arm_y)], fill=glow_color, width=6)
+        elif pose == "lean_back":
+            draw.line([(cx, arm_y), (cx - 30, arm_y - 60)], fill=glow_color, width=6)
+            draw.line([(cx, arm_y), (cx + 80, arm_y + 30)], fill=glow_color, width=6)
+        else:
+            # Default groove arms
+            draw.line([(cx, arm_y), (cx - 60, arm_y + 40)], fill=glow_color, width=6)
+            draw.line([(cx, arm_y), (cx + 60, arm_y + 40)], fill=glow_color, width=6)
+
+        # Legs
+        hip_y = body_bottom
+        if pose in ("kick_out",):
+            draw.line([(cx, hip_y), (cx - 30, ground_y)], fill=glow_color, width=6)
+            draw.line([(cx, hip_y), (cx + 80, ground_y - 40)], fill=glow_color, width=6)
+        elif pose in ("slide_glide",):
+            draw.line([(cx, hip_y), (cx - 50, ground_y)], fill=glow_color, width=6)
+            draw.line([(cx, hip_y), (cx + 50, ground_y)], fill=glow_color, width=6)
+        else:
+            draw.line([(cx, hip_y), (cx - 30, ground_y)], fill=glow_color, width=6)
+            draw.line([(cx, hip_y), (cx + 30, ground_y)], fill=glow_color, width=6)
+
+        # -- Now draw the dark silhouette on top --
+        sil_color = (15, 15, 25)
+
+        # Head
+        draw.ellipse(
+            [cx - head_r, head_y - head_r, cx + head_r, head_y + head_r],
+            fill=sil_color,
+        )
+
+        # Hair flare (anime style - spiky strands)
+        for angle_offset in range(-40, 50, 15):
+            hx = cx + int(35 * math.cos(math.radians(angle_offset - 90)))
+            hy = head_y + int(35 * math.sin(math.radians(angle_offset - 90)))
+            draw.line([(cx, head_y - head_r + 5), (hx, hy - 15)], fill=sil_color, width=5)
+
+        # Body torso
+        draw.line([(cx, body_top), (cx, body_bottom)], fill=sil_color, width=7)
+
+        # Arms (same positions but dark)
+        if pose in ("arms_raised", "final_pose"):
+            draw.line([(cx, arm_y), (cx - 70, arm_y - 80)], fill=sil_color, width=5)
+            draw.line([(cx, arm_y), (cx + 70, arm_y - 80)], fill=sil_color, width=5)
+        elif pose in ("side_step", "pop_lock"):
+            draw.line([(cx, arm_y), (cx - 100, arm_y + 10)], fill=sil_color, width=5)
+            draw.line([(cx, arm_y), (cx + 40, arm_y + 70)], fill=sil_color, width=5)
+        elif pose == "spin":
+            draw.line([(cx, arm_y), (cx - 90, arm_y)], fill=sil_color, width=5)
+            draw.line([(cx, arm_y), (cx + 90, arm_y)], fill=sil_color, width=5)
+        elif pose == "lean_back":
+            draw.line([(cx, arm_y), (cx - 30, arm_y - 60)], fill=sil_color, width=5)
+            draw.line([(cx, arm_y), (cx + 80, arm_y + 30)], fill=sil_color, width=5)
+        else:
+            draw.line([(cx, arm_y), (cx - 60, arm_y + 40)], fill=sil_color, width=5)
+            draw.line([(cx, arm_y), (cx + 60, arm_y + 40)], fill=sil_color, width=5)
+
+        # Legs
+        if pose in ("kick_out",):
+            draw.line([(cx, hip_y), (cx - 30, ground_y)], fill=sil_color, width=5)
+            draw.line([(cx, hip_y), (cx + 80, ground_y - 40)], fill=sil_color, width=5)
+        elif pose in ("slide_glide",):
+            draw.line([(cx, hip_y), (cx - 50, ground_y)], fill=sil_color, width=5)
+            draw.line([(cx, hip_y), (cx + 50, ground_y)], fill=sil_color, width=5)
+        else:
+            draw.line([(cx, hip_y), (cx - 30, ground_y)], fill=sil_color, width=5)
+            draw.line([(cx, hip_y), (cx + 30, ground_y)], fill=sil_color, width=5)
+
+    def _render_neon_reflection(
+        self,
+        draw: ImageDraw.ImageDraw,
+        img: Image.Image,
+        element: dict[str, Any],
+        width: int,
+        height: int,
+        scene: ScriptScene,
+    ) -> None:
+        """Render neon light reflections on the ground/floor.
+
+        Draws horizontal streaks of colored light in the bottom portion
+        of the frame to simulate wet-floor or polished-surface reflections
+        of the neon city behind the dancer.
+        """
+        accent: str = element.get("color", "#FF00FF")
+        mode: str = element.get("value", "floor")
+        accent_rgb = self._hex_to_rgb(accent)
+
+        floor_start = int(height * 0.82)
+
+        # Determine intensity based on mode
+        num_streaks = 25 if mode == "full_bloom" else 15
+
+        for _ in range(num_streaks):
+            sx = random.randint(0, width)
+            sy = random.randint(floor_start, height)
+            streak_w = random.randint(30, 120)
+            streak_h = random.randint(2, 5)
+
+            # Dim the accent based on distance from the dancer
+            dist_from_centre = abs(sx - width // 2) / (width // 2)
+            dim_factor = max(0.2, 1.0 - dist_from_centre)
+            dimmed = tuple(int(c * dim_factor) for c in accent_rgb)
+
+            draw.rectangle(
+                [sx, sy, sx + streak_w, sy + streak_h],
+                fill=dimmed,
+            )
+
+        # Add a few bright reflection spots near centre
+        for _ in range(5 if mode == "full_bloom" else 3):
+            rx = width // 2 + random.randint(-80, 80)
+            ry = random.randint(floor_start + 5, height - 10)
+            rr = random.randint(4, 10)
+            draw.ellipse(
+                [rx - rr, ry - rr, rx + rr, ry + rr],
+                fill=accent_rgb,
+            )
+
+    @staticmethod
+    def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
+        """Convert a hex color string to an (R, G, B) tuple."""
+        hex_color = hex_color.lstrip("#")
+        if len(hex_color) != 6:
+            return (255, 0, 255)
+        return (
+            int(hex_color[0:2], 16),
+            int(hex_color[2:4], 16),
+            int(hex_color[4:6], 16),
+        )
 
     # ------------------------------------------------------------------ #
     # Thumbnail generation

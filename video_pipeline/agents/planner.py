@@ -74,6 +74,42 @@ NURSERY_RHYMES = [
     {"name": "Head Shoulders Knees and Toes", "tempo": 120},
 ]
 
+# Anime dance scene variations for the hip-hop dance video type
+ANIME_DANCE_PLANS = [
+    {
+        "label": "Tokyo Balcony Night Groove",
+        "setting": "tokyo_balcony",
+        "dance_style": "hip_hop",
+        "music_vibe": "city_pop",
+        "tempo": 118,
+        "num_dance_scenes": 8,
+    },
+    {
+        "label": "Neon Rooftop Freestyle",
+        "setting": "neon_rooftop",
+        "dance_style": "freestyle",
+        "music_vibe": "city_pop",
+        "tempo": 122,
+        "num_dance_scenes": 10,
+    },
+    {
+        "label": "Shibuya Midnight Flow",
+        "setting": "shibuya_crossing",
+        "dance_style": "hip_hop",
+        "music_vibe": "city_pop",
+        "tempo": 115,
+        "num_dance_scenes": 8,
+    },
+    {
+        "label": "Akihabara Synth Dance",
+        "setting": "akihabara_street",
+        "dance_style": "popping",
+        "music_vibe": "city_pop",
+        "tempo": 126,
+        "num_dance_scenes": 10,
+    },
+]
+
 
 class PlannerAgent(BaseAgent):
     """Creates detailed content plans from research topics."""
@@ -119,6 +155,7 @@ class PlannerAgent(BaseAgent):
             VideoType.ANIMALS: self._plan_animals,
             VideoType.LULLABY: self._plan_lullaby,
             VideoType.NURSERY_RHYME: self._plan_nursery_rhyme,
+            VideoType.ANIME_DANCE: self._plan_anime_dance,
         }
 
         planner = planners.get(video_type, self._plan_counting)
@@ -197,6 +234,23 @@ class PlannerAgent(BaseAgent):
             title_working=f"{spec['name']} | Nursery Rhyme for Babies",
             target_duration_seconds=self.config.content.default_duration_seconds,
             topic_details=spec,
+        )
+
+    def _plan_anime_dance(self, video_id: str) -> ContentPlan:
+        spec = random.choice(ANIME_DANCE_PLANS)
+        return ContentPlan(
+            video_id=video_id,
+            video_type=VideoType.ANIME_DANCE,
+            title_working=f"Anime Dance - {spec['label']}",
+            target_duration_seconds=self.config.content.default_duration_seconds,
+            target_audience="anime fans, lofi/city pop listeners",
+            topic_details={
+                "setting": spec["setting"],
+                "dance_style": spec["dance_style"],
+                "music_vibe": spec["music_vibe"],
+                "tempo": spec["tempo"],
+                "num_dance_scenes": spec["num_dance_scenes"],
+            },
         )
 
     def _generate_title(self, topic) -> str:

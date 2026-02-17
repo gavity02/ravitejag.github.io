@@ -19,6 +19,7 @@ content:
     - alphabet
     - animals
     - lullaby
+    - anime_dance
   # Default video duration in seconds
   default_duration_seconds: 180  # 3 minutes
   # Lullaby duration (longer = more watch time = better for algorithm)
