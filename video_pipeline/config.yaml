@@ -1,0 +1,106 @@
+# ============================================================
+# Baby Content Video Pipeline - Configuration
+# ============================================================
+# All settings have sensible defaults for $0 budget operation.
+# Uncomment and modify as needed.
+
+# --- Output directories ---
+output_dir: "output"
+data_dir: "data"
+temp_dir: ".tmp"
+
+# --- Content settings ---
+content:
+  # Which video types to produce (rotates through these)
+  video_types:
+    - counting
+    - colors
+    - shapes
+    - alphabet
+    - animals
+    - lullaby
+  # Default video duration in seconds
+  default_duration_seconds: 180  # 3 minutes
+  # Lullaby duration (longer = more watch time = better for algorithm)
+  lullaby_duration_seconds: 600  # 10 minutes
+  # How many videos per batch run
+  videos_per_batch: 5
+
+# --- Text-to-Speech (free: edge-tts) ---
+tts:
+  engine: "edge-tts"
+  # Good voices for baby content:
+  #   en-US-AnaNeural     - Friendly female (recommended)
+  #   en-US-JennyNeural   - Warm female
+  #   en-GB-SoniaNeural   - British female
+  #   en-US-GuyNeural     - Friendly male
+  voice: "en-US-AnaNeural"
+  rate: "-10%"     # Slower for babies
+  volume: "+0%"
+  pitch: "+5Hz"    # Slightly higher
+
+# --- Visual generation ---
+visual:
+  resolution: [1920, 1080]
+  fps: 24
+  background_colors:
+    - "#FF6B6B"  # Coral
+    - "#4ECDC4"  # Teal
+    - "#45B7D1"  # Sky blue
+    - "#96CEB4"  # Sage
+    - "#FFEAA7"  # Soft yellow
+    - "#DDA0DD"  # Plum
+    - "#98D8C8"  # Mint
+    - "#F7DC6F"  # Warm yellow
+    - "#BB8FCE"  # Lavender
+    - "#85C1E9"  # Light blue
+
+# --- Background music ---
+music:
+  mode: "procedural"   # procedural (free), file, or none
+  music_dir: "music"   # Place royalty-free music files here
+  volume_percent: 15   # Background music volume (% of narration)
+  tempo_bpm: 100
+  key: "C"
+
+# --- SEO ---
+seo:
+  channel_name: "Baby Learning Fun"
+  default_tags:
+    - baby
+    - toddler
+    - learning
+    - educational
+    - kids
+    - nursery
+    - counting
+    - colors
+    - shapes
+    - alphabet
+
+# --- YouTube upload ---
+youtube:
+  # To enable upload, you need YouTube Data API credentials:
+  # 1. Go to console.cloud.google.com
+  # 2. Create a project, enable YouTube Data API v3
+  # 3. Create OAuth 2.0 credentials (Desktop app)
+  # 4. Download as client_secrets.json
+  client_secrets_file: "client_secrets.json"
+  credentials_file: "youtube_credentials.json"
+  daily_upload_limit: 5
+  # Start as private so you can review before publishing
+  default_privacy: "private"
+
+# --- Pipeline settings ---
+max_retries: 3
+retry_delay_seconds: 2.0
+log_level: "INFO"
+checkpoint_enabled: true
+checkpoint_dir: ".checkpoints"
+
+# --- Optional: LLM for enhanced scripts ---
+# Set llm_enabled to true if you have Ollama running locally
+llm_enabled: false
+llm_base_url: "http://localhost:11434/v1"
+llm_model: "llama3.2"
+llm_api_key: "ollama"

@@ -1,0 +1,20 @@
+# Baby Content Video Pipeline - Dependencies
+# Install: pip install -r requirements.txt
+
+# Core
+pydantic>=2.0
+pyyaml>=6.0
+
+# Text-to-Speech (free, high quality)
+edge-tts>=6.1
+
+# Visual generation
+Pillow>=10.0
+
+# Video composition
+moviepy>=1.0.3
+
+# YouTube upload (optional - only needed if uploading)
+google-api-python-client>=2.0
+google-auth-oauthlib>=1.0
+google-auth-httplib2>=0.1

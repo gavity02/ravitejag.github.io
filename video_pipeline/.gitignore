@@ -1,0 +1,35 @@
+# Pipeline outputs
+output/
+.tmp/
+.checkpoints/
+*.mp4
+*.mp3
+*.wav
+
+# API credentials (NEVER commit these)
+client_secrets.json
+youtube_credentials.json
+*.pickle
+
+# Data files (generated at runtime)
+data/type_history.json
+data/used_topics.json
+data/production_history.json
+data/batch_summary.json
+data/research_suggestions.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Logs
+pipeline.log
+
+# Music files (user-provided, potentially large)
+music/*.mp3
+music/*.wav
+music/*.ogg
